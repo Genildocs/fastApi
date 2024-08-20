@@ -2,7 +2,9 @@ from itertools import product
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session, defer
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 from . import models, schemas, crud
 from .crud import get_products
 from .database import engine, SessionLocal
@@ -23,6 +25,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/fruitableApi/static", StaticFiles(directory="fruitableApi/static"), name="static")
+templates = Jinja2Templates(directory="fruitableApi/templates")
+
 models.Base.metadata.create_all(bind=engine)
 
 def get_db():
@@ -33,12 +38,16 @@ def get_db():
         db.close()
 
 @app.get("/")
-def index():
-    return {"message": {"Teste"}}
+def index(request: Request):
+    return templates.TemplateResponse("index.html", 
+                                      {"request": request,
+                                       "title": "Fruitables Api",
+                                       "message": "Welcome to the Fruitables Api"
+                                       })
 
 @app.post("/api/v1/products", response_model=schemas.ProductResponseSchema)
 def create_product(product: schemas.ProductCreateSchema, db:Session = Depends(get_db)):    
-    db_product = crud.get_product(db, product_id=product.id)    
+    db_product = crud.get_product(db, product_id=product.id)
     if db_product:
         raise HTTPException(status_code=400, detail="Product already registered")  
     return crud.create_product(db=db, product=product)
@@ -57,6 +66,7 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")    
     return product
+
 
 @app.delete("/api/v1/product/{product_id}", response_model=schemas.ProductResponseSchema)
 def delete_product(product_id: int, db: Session = Depends(get_db)):
