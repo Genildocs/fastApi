@@ -1,0 +1,9 @@
+2024-08-20 21:24:50,437 - app_logger - INFO - Request: GET http://127.0.0.1:8000/api/v1/products
+2024-08-20 21:24:50,440 - app_logger - INFO - Root endpoint accessed
+2024-08-20 21:24:50,447 - app_logger - INFO - Response status: 200
+2024-08-20 21:26:15,552 - app_logger - INFO - Request: GET http://127.0.0.1:8000/api/v1/products
+2024-08-20 21:26:15,553 - app_logger - INFO - Root endpoint accessed
+2024-08-20 21:26:15,556 - app_logger - INFO - Response status: 200
+2024-08-20 21:26:58,085 - app_logger - INFO - Request: GET http://127.0.0.1:8000/api/v1/products
+2024-08-20 21:26:58,087 - app_logger - INFO - Root endpoint accessed
+2024-08-20 21:26:58,094 - app_logger - INFO - Response status: 200
