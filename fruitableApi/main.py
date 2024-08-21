@@ -6,7 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from starlette.responses import JSONResponse
-
+from typing import Annotated
+from fastapi.security import OAuth2PasswordBearer
 from . import models, schemas, crud
 from .crud import get_products
 from .database import engine, SessionLocal
@@ -14,6 +15,8 @@ from .schemas import ProductCreateSchema, ProductResponseSchema
 from .logger import logger
 
 app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 origins = [
     "http://localhost:8000",
@@ -75,6 +78,10 @@ def index(request: Request):
 
 
 @app.post("/api/v1/products", response_model=schemas.ProductResponseSchema)
+def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
+    return {"token": token}
+
+
 def create_product(product: schemas.ProductCreateSchema, db: Session = Depends(get_db)):
     db_product = crud.get_product(db, product_id=product.id)
     if db_product:
@@ -84,7 +91,7 @@ def create_product(product: schemas.ProductCreateSchema, db: Session = Depends(g
 
 @app.get("/api/v1/products", response_model=list[schemas.ProductResponseSchema])
 def read_products(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    logger.info("Root endpoint accessed")
+    logger.info("Products endpoint accessed")
     products = crud.get_products(db, skip=skip, limit=limit)
     if products is None:
         raise HTTPException(status_code=404, detail="Products not found")
@@ -94,6 +101,7 @@ def read_products(skip: int = 0, limit: int = 10, db: Session = Depends(get_db))
 
 @app.get("/api/v1/product/{product_id}", response_model=schemas.ProductResponseSchema)
 def read_product(product_id: int, db: Session = Depends(get_db)):
+    logger.info("Product endpoint accessed")
     product = crud.get_product(db, product_id)
 
     if product is None:
