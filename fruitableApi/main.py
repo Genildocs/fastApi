@@ -35,7 +35,9 @@ async def log_requests(request: Request, call_next):
         return response
     except Exception as e:
         logger.error(f"Error occurred: {e}", exc_info=True)
-        return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+        return JSONResponse(
+            status_code=500, content={"message": "Internal Server Error"}
+        )
 
 
 app.mount(
@@ -61,7 +63,8 @@ def index(request: Request):
         {
             "request": request,
             "title": "Fruitables Api",
-            "message": "Welcome to the Fruitables Api",
+            "message": "Fake API for fruits and vegetables products",
+            "message2": "You can access the documentation for this API by adding /docs to the API's URL",
         },
     )
 
@@ -97,5 +100,6 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
     "/api/v1/product/{product_id}", response_model=schemas.ProductResponseSchema
 )
 def delete_product(product_id: int, db: Session = Depends(get_db)):
+    logger.info("Delete product logger")
     product = crud.delete_product(db, product_id)
     return product

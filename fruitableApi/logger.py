@@ -19,7 +19,7 @@ log_config = {
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "default",
             "filename": "app.log",
-            "maxBytes": 1024*1024*5,  # 5 MB
+            "maxBytes": 1024 * 1024 * 5,  # 5 MB
             "backupCount": 5,  # Mantém 5 arquivos de backup
         },
     },
@@ -34,4 +34,3 @@ log_config = {
 
 dictConfig(log_config)
 logger = logging.getLogger("app_logger")
-
