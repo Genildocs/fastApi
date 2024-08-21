@@ -15,7 +15,12 @@ from .logger import logger
 
 app = FastAPI()
 
-origins = ["http://localhost:8000", "http://127.0.0.1:8000"]
+origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "https://fastapi-pqaf.onrender.com",
+]
 
 app.add_middleware(
     CORSMiddleware,
