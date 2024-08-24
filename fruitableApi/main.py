@@ -23,6 +23,7 @@ origins = [
     "http://127.0.0.1:8000",
     "http://localhost:3000",
     "https://fastapi-pqaf.onrender.com",
+    "https://e-commerce-fruitables.vercel.app/",
 ]
 
 app.add_middleware(
